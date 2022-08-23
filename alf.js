@@ -1,94 +1,124 @@
 class ALFjs {
-	items;
+    items;
 
-	constructor(selector) {
-		if (selector == '' || selector == undefined) {
+    constructor(selector, fromFind) {
+        fromFind = fromFind || false;
+        if (fromFind === true) {
+            this.items = selector;
+        } else {
+            if (selector == '' || selector == undefined) {
 
-		} else if (selector[0] != '.' && selector[0] != '#') {
-			this.items = [selector];
-		} else {
-			this.items = document.querySelectorAll(selector);
-		}
-	}
+            } else if (selector[0] != '.' && selector[0] != '#') {
+                this.items = [selector];
+            } else {
+                this.items = document.querySelectorAll(selector);
+            }
+        }
+    }
 
-	each(func) {
-		return this.items.forEach(func);
-	}
+    find(selector) {
+        return alf(this.items[0].querySelectorAll(selector, true));
+    }
 
-	addClass(name) {
-		Array.prototype.forEach.call(this.items, function(el) {
-			el.classList.add(name);
-		});
-		return this;
-	}
+    each(func) {
+        return this.items.forEach(func);
+    }
 
-	removeClass(name) {
-		Array.prototype.forEach.call(this.items, function(el) {
-			el.classList.remove(name);
-		});
-		return this;
-	}
+    parent() {
+        return alf(this.items[0].parentNode);
+    }
 
-	toggleClass(name) {
-		Array.prototype.forEach.call(this.items, function(el) {
-			console.log(el);
-			el.classList.toggle(name);
-		});
-		return this;
-	}
+    addClass(name) {
+        Array.prototype.forEach.call(this.items, function(el) {
+            if (el.length && el.length > 0) {
+                Array.prototype.forEach.call(el, function(el2) {
+                    el2.classList.add(name);
+                });
+            } else {
+                el.classList.add(name);
+            }
+        });
+        return this;
+    }
 
-	hide() {
-		Array.prototype.forEach.call(this.items, function(el) {
-			el.style.display = 'none';
-		});
-		return this;
-	}
+    removeClass(name) {
+        Array.prototype.forEach.call(this.items, function(el) {
+            if (el.length && el.length > 0) {
+                Array.prototype.forEach.call(el, function(el2) {
+                    el2.classList.remove(name);
+                });
+            } else {
+                el.classList.remove(name);
+            }
+        });
+        return this;
+    }
 
-	show() {
-		Array.prototype.forEach.call(this.items, function(el) {
-			el.style.display = 'block';
-		});
-		return this;
-	}
+    toggleClass(name) {
+        Array.prototype.forEach.call(this.items, function(el) {
+            if (el.length && el.length > 0) {
+                Array.prototype.forEach.call(el, function(el2) {
+                    el2.classList.toggle(name);
+                });
+            } else {
+                el.classList.toggle(name);
+            }
+        });
+        return this;
+    }
 
-	style(property, value) {
-		Array.prototype.forEach.call(this.items, function(el) {
-			el.style[property] = value;
-		});
-		return this;
-	}
+    hide() {
+        Array.prototype.forEach.call(this.items, function(el) {
+            el.style.display = 'none';
+        });
+        return this;
+    }
 
-	first() {
-		return alf(this.items[0]);
-	}
+    show() {
+        Array.prototype.forEach.call(this.items, function(el) {
+            el.style.display = 'block';
+        });
+        return this;
+    }
 
-	last() {
-		return alf(this.items[this.items.length - 1]);
-	}
+    style(property, value) {
+        Array.prototype.forEach.call(this.items, function(el) {
+            el.style[property] = value;
+        });
+        return this;
+    }
 
-	count() {
-		return this.items.length;
-	}
+    first() {
+        return alf(this.items[0]);
+    }
 
-	on(event, func) {
-		Array.prototype.forEach.call(this.items, function(el) {
-			el.addEventListener(event, func);
-		});
-		return this;
-	}
+    last() {
+        return alf(this.items[this.items.length - 1]);
+    }
 
-	ajax(url, method, data, func) {
-		var xhr = new XMLHttpRequest();
-		xhr.open(method, url, true);
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4 && xhr.status == 200) {
-				func(xhr.responseText);
-			}
-		}
-		xhr.send(data);
-	}
+    count() {
+        return this.items.length;
+    }
+
+    on(event, func) {
+        Array.prototype.forEach.call(this.items, function(el) {
+            el.addEventListener(event, func);
+        });
+        return this;
+    }
+
+    ajax(url, method, data, func) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                func(xhr.responseText);
+            }
+        }
+        xhr.send(data);
+    }
 }
 
-export function alf(selector) {
-	return new ALFjs(selector);
+export function alf(selector, fromFind) {
+    return new ALFjs(selector, fromFind);
 }
